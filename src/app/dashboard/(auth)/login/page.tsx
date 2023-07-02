@@ -1,21 +1,33 @@
 'use client';
 
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useRef } from 'react';
 
 const Login = () => {
+   const session = useSession();
+   const router = useRouter();
+
    const emailRef = useRef<HTMLInputElement>(null);
    const passwordRef = useRef<HTMLInputElement>(null);
 
    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      
+
       const email = emailRef.current?.value;
       const password = passwordRef.current?.value;
 
-      if (email?.trim() === '' || password?.trim() === '') return
+      if (email?.trim() === '' || password?.trim() === '') return;
 
-      signIn('credentials', {email, password})
+      signIn('credentials', { email, password });
+   };
+
+   if (session.status === 'loading') {
+      return <p className='animate-pulse'>Loading..</p>;
+   }
+
+   if (session.status === 'authenticated') {
+      router.push('/dashboard');
    }
 
    return (
@@ -38,12 +50,19 @@ const Login = () => {
                className='text-lg font-bold dark:text-gray-100'
                required
             />
-            <button type='submit' className='primary-button text-gray-950 w-full'>
+            <button
+               type='submit'
+               className='primary-button text-gray-950 w-full'
+            >
                Login
             </button>
          </form>
 
-         <button type='button' onClick={() => signIn('google')} className='primary-button text-black w-96'>
+         <button
+            type='button'
+            onClick={() => signIn('google')}
+            className='primary-button text-black w-96'
+         >
             Login with Google
          </button>
       </div>
