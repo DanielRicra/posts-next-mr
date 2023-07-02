@@ -1,8 +1,13 @@
+'use client';
+
 import { links } from '@/constants';
 import Link from 'next/link';
 import ColorSchemeToggle from '../switch/ColorSchemeToggle';
+import { signOut, useSession } from 'next-auth/react';
 
 const Navbar = () => {
+   const session = useSession();
+
    return (
       <div className='h-24 flex justify-between items-center'>
          <Link href='/' className='font-bold text-[22px]'>
@@ -20,9 +25,14 @@ const Navbar = () => {
                </Link>
             ))}
 
-            <button className='p-[5px] px-3 border-none bg-[#53c28b] text-white cursor-pointer rounded-md'>
-               Logout
-            </button>
+            {session.status === 'authenticated' && (
+               <button
+                  className='p-[5px] px-3 border-none bg-[#53c28b] text-white cursor-pointer rounded-md'
+                  onClick={() => signOut()}
+               >
+                  Logout
+               </button>
+            )}
          </div>
       </div>
    );
