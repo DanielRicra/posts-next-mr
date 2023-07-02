@@ -15,3 +15,10 @@ export interface IPost {
    username: string;
    image: string;
 }
+
+export interface IUser {
+   _id: Types.ObjectId;
+   name: string;
+   email: string;
+   password: string;
+}
